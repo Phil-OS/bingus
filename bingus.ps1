@@ -1,23 +1,23 @@
 # --- Configurable variables ---
-$imageUrl = "https://static.wikia.nocookie.net/floppapedia-revamped/images/5/5f/ActualBingus.jpg"
-$localPath = "C:\Windows\BINGUS.jpg"
+$imageUrl  = "https://static.wikia.nocookie.net/floppapedia-revamped/images/5/5f/ActualBingus.jpg"
+$localPath = "C:\Windows\Web\Wallpaper\boingus.jpg"
 
-# --- Download the image ---
+# --- Download the image to a permanent location ---
 Invoke-WebRequest -Uri $imageUrl -OutFile $localPath
 
-# --- Set as desktop background using Windows API ---
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
+# --- Registry path for Group Policy wallpaper ---
+$regPath = "HKLM:\Software\Policies\Microsoft\Windows\Control Panel\Desktop"
 
-public class Wallpaper {
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+# Create key if it doesn't exist
+if (-not (Test-Path $regPath)) {
+    New-Item -Path $regPath -Force | Out-Null
 }
-"@
 
-$SPI_SETDESKWALLPAPER = 0x14
-$SPIF_UPDATEINIFILE   = 0x01
-$SPIF_SENDWININICHANGE = 0x02
+# Set the wallpaper path
+Set-ItemProperty -Path $regPath -Name "Wallpaper" -Value $localPath
 
-[Wallpaper]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $localPath, $SPIF_UPDATEINIFILE -bor $SPIF_SENDWININICHANGE)
+# Set the wallpaper style (0 = Center, 2 = Stretch, 6 = Fit, 10 = Fill, etc.)
+Set-ItemProperty -Path $regPath -Name "WallpaperStyle" -Value "10"
+
+# Force Group Policy update
+gpupdate /force
