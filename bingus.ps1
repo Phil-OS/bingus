@@ -3,7 +3,7 @@ $imageUrl  = "https://static.wikia.nocookie.net/floppapedia-revamped/images/5/5f
 $localPath = "C:\Windows\Web\Wallpaper\boingus.jpg"
 
 # --- Download the image to a permanent location ---
-Invoke-WebRequest -Uri $imageUrl -OutFile $localPath
+start-bitstransfer -source $imageUrl -destination $localpath
 
 # --- Registry path for Group Policy wallpaper ---
 $regPath = "HKLM:\Software\Policies\Microsoft\Windows\Control Panel\Desktop"
