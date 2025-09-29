@@ -6,7 +6,7 @@ $localPath = "C:\Windows\Web\Wallpaper\boingus.jpg"
 start-bitstransfer -source $imageUrl -destination $localpath
 
 # --- Registry path for Group Policy wallpaper ---
-$regPath = "HKLM:\Software\Policies\Microsoft\Windows\Control Panel\Desktop"
+$regPath = "HKCU:\Control Panel\Desktop"
 
 # Create key if it doesn't exist
 if (-not (Test-Path $regPath)) {
